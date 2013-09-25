@@ -15,11 +15,12 @@
 
 #FileApi class implementation
 
+from Constants import Uri, Params, ReqMethod
+from MultipartPostHandler import MultipartPostHandler
+import codecs
 import httplib
 import urllib
 import urllib2
-from MultipartPostHandler import MultipartPostHandler
-from Constants import Uri, Params, ReqMethod
 
 class FileApiBase:
     headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
@@ -35,7 +36,11 @@ class FileApiBase:
      
     def uploadMultipart(self, params):
         self.addApiKeys(params) 
-        params [Params.FILE] = open(params[Params.FILE_PATH],'rb')
+        params [Params.FILE] = codecs.open(
+            params[Params.FILE_PATH],
+            'rb',
+            'utf-8',
+        )
         del params[Params.FILE_PATH] #no need in extra field in POST
         opener = urllib2.build_opener(MultipartPostHandler)
         urllib2.install_opener(opener)
