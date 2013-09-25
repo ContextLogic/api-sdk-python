@@ -13,10 +13,14 @@
  * limitations under the License.
 '''
 
-import  urllib
+import codecs
+import mimetools
+import mimetypes
+import os
+import stat
+import sys
+import urllib
 import urllib2
-import mimetools, mimetypes
-import os, stat
 
 class Callable:
     def __init__(self, anycallable):
@@ -37,6 +41,8 @@ class MultipartPostHandler(urllib2.BaseHandler):
                  for(key, value) in data.items():
                      if type(value) == file:
                          v_files.append((key, value))
+                     elif isinstance(value, codecs.StreamReaderWriter):
+                        v_files.append((key, value))
                      else:
                          v_vars.append((key, value))
             except TypeError:
@@ -67,7 +73,6 @@ class MultipartPostHandler(urllib2.BaseHandler):
             buffer += 'Content-Disposition: form-data; name="%s"' % key
             buffer += '\r\n\r\n' + value + '\r\n'
         for(key, fd) in files:
-            file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
             filename = fd.name.split('/')[-1]
             contenttype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
             buffer += '--%s\r\n' % boundary
@@ -76,6 +81,7 @@ class MultipartPostHandler(urllib2.BaseHandler):
             fd.seek(0)
             buffer += '\r\n' + fd.read() + '\r\n'
         buffer += '--%s--\r\n\r\n' % boundary
+        buffer = buffer.encode('utf-8')
         return boundary, buffer
     multipart_encode = Callable(multipart_encode)
 
