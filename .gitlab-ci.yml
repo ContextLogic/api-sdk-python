@@ -9,8 +9,8 @@ upload_egg:
 
     # Check if the package is actually installable
     - apk add python
-    # - apk add --no-cache --virtual .build-deps gcc musl-dev
-    # - apk add python-dev
+    - apk add --no-cache --virtual .build-deps gcc musl-dev
+    - apk add python-dev
     - apk add libffi-dev openssl-dev
     - apk add py-pip
     - pip install -U devpi-web devpi-client
