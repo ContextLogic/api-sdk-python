@@ -21,6 +21,7 @@ install_requires = []
 
 setup(
     name="api-sdk-python",
+    version="0.0.0",
     author="Smartling, Inc.",
     author_email="gjones@smartling.com",
     description="Smartling python library for file translations",
